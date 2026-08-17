@@ -1,0 +1,186 @@
+{
+    "general": {
+        "case_name": "simple_casting",
+        "end_time": 0.30,
+        "save_path": "./results",
+        "save_dt": 0.02
+    },
+
+    "domain": {
+        "x": {
+            "cells": 64,
+            "range": [-0.05, 0.05]
+        },
+        "y": {
+            "cells": 96,
+            "range": [0.0, 0.15]
+        },
+        "z": {
+            "cells": 32,
+            "range": [-0.025, 0.025]
+        },
+        "decomposition": {
+            "split_x": 1,
+            "split_y": 1,
+            "split_z": 1
+        }
+    },
+
+    "boundary_conditions": {
+        "primitives": {
+            "east": {
+                "type": "WALL",
+                "wall_velocity_callable": {
+                    "u": 0.0,
+                    "v": 0.0,
+                    "w": 0.0
+                }
+            },
+            "west": {
+                "type": "WALL",
+                "wall_velocity_callable": {
+                    "u": 0.0,
+                    "v": 0.0,
+                    "w": 0.0
+                }
+            },
+            "north": {
+                "type": "WALL",
+                "wall_velocity_callable": {
+                    "u": 0.0,
+                    "v": 0.0,
+                    "w": 0.0
+                }
+            },
+            "south": {
+                "type": "WALL",
+                "wall_velocity_callable": {
+                    "u": 0.0,
+                    "v": 0.0,
+                    "w": 0.0
+                }
+            },
+            "top": {
+                "type": "WALL",
+                "wall_velocity_callable": {
+                    "u": 0.0,
+                    "v": 0.0,
+                    "w": 0.0
+                }
+            },
+            "bottom": {
+                "type": "WALL",
+                "wall_velocity_callable": {
+                    "u": 0.0,
+                    "v": 0.0,
+                    "w": 0.0
+                }
+            }
+        },
+
+        "levelset": {
+            "east": {"type": "ZEROGRADIENT"},
+            "west": {"type": "ZEROGRADIENT"},
+            "north": {"type": "ZEROGRADIENT"},
+            "south": {"type": "ZEROGRADIENT"},
+            "top": {"type": "ZEROGRADIENT"},
+            "bottom": {"type": "ZEROGRADIENT"}
+        }
+    },
+
+    "initial_condition": {
+        "primitives": {
+            "positive": {
+                "rho": 1.0,
+                "u": 0.0,
+                "v": 0.0,
+                "w": 0.0,
+                "p": 100000.0
+            },
+
+            "negative": {
+                "rho": 1000.0,
+                "u": 0.0,
+                "v": 0.0,
+                "w": 0.0,
+                "p": "lambda x, y, z: 100000.0 + 1000.0 * 9.81 * (0.115 - y)"
+            }
+        },
+
+        "levelset": "lambda x, y, z: jnp.maximum(jnp.maximum(jnp.abs(x) - 0.035, jnp.abs(z) - 0.018), jnp.maximum(0.08 - y, y - 0.13))"
+    },
+
+    "forcings": {
+        "gravity": [0.0, -9.81, 0.0]
+    },
+
+    "material_properties": {
+        "positive": {
+            "equation_of_state": {
+                "model": "IdealGas",
+                "specific_heat_ratio": 1.4,
+                "specific_gas_constant": 1.0
+            },
+
+            "transport": {
+                "dynamic_viscosity": {
+                    "model": "CUSTOM",
+                    "value": 0.01
+                },
+                "bulk_viscosity": 0.0,
+                "thermal_conductivity": {
+                    "model": "CUSTOM",
+                    "value": 0.0
+                }
+            }
+        },
+
+        "negative": {
+            "equation_of_state": {
+                "model": "IdealGas",
+                "specific_heat_ratio": 1.4,
+                "specific_gas_constant": 1.0
+            },
+
+            "transport": {
+                "dynamic_viscosity": {
+                    "model": "CUSTOM",
+                    "value": 1.0
+                },
+                "bulk_viscosity": 0.0,
+                "thermal_conductivity": {
+                    "model": "CUSTOM",
+                    "value": 0.0
+                }
+            }
+        },
+
+        "pairing": {
+            "surface_tension_coefficient": 0.5
+        }
+    },
+
+    "output": {
+        "primitives": [
+            "density",
+            "velocity",
+            "pressure"
+        ],
+        "real_fluid": [
+            "density",
+            "velocity",
+            "pressure"
+        ],
+        "levelset": [
+            "levelset",
+            "volume_fraction"
+        ]
+    },
+
+    "nondimensionalization_parameters": {
+        "density_reference": 1000.0,
+        "length_reference": 0.05,
+        "velocity_reference": 1.0,
+        "temperature_reference": 1.0
+    }
+}
